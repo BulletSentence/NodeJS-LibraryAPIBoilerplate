@@ -44,6 +44,34 @@ class BookController {
       res.status(500).send({ message: err.message });
     }
   };
+
+  static listBookById = async (req, res) => {
+    const id = req.params.id;
+    try {
+      const book = await books.findById(id, { new: false });
+      if (!book) {
+        res.status(404).send({ message: "Book not found" });
+      } else {
+        res.status(200).send(book);
+      }
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  };
+
+  static deleteBook = async (req, res) => {
+    const id = req.params.id;
+    try {
+      const book = await books.findByIdAndDelete(id);
+      if (!book) {
+        res.status(404).send({ message: "Book not found" });
+      } else {
+        res.status(200).send({ message: "Book deleted" });
+      }
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  }
 }
 
 export default BookController;
