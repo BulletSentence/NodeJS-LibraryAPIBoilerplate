@@ -3,7 +3,8 @@ import books from "../models/Book.js";
 class BookController {
   static listbooks = async (req, res) => {
     try {
-      const booksList = await books.find();
+      const booksList = await books.find()
+      .populate("autor").exec();
       res.status(200).send(booksList);
     } catch (err) {
       res.status(500).send({ message: err.message });
@@ -48,7 +49,7 @@ class BookController {
   static listBookById = async (req, res) => {
     const id = req.params.id;
     try {
-      const book = await books.findById(id, { new: false });
+      const book = await books.findById(id, { new: false }).populate("autor").exec();
       if (!book) {
         res.status(404).send({ message: "Book not found" });
       } else {
@@ -72,6 +73,17 @@ class BookController {
       res.status(500).send({ message: err.message });
     }
   }
+  
+  static listBooksByEditor = async (req, res) => {
+    const editor = req.query.editor;
+    try {
+      const booksList = await books.find({ editora: editor })
+      .populate("autor").exec();
+      res.status(200).send(booksList);
+    } catch (err) {
+      res.status(500).send({ message: err.message });
+    }
+  } 
 }
 
 export default BookController;
